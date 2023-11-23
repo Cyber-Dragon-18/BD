@@ -1,0 +1,159 @@
+--P1
+select codigo, nome
+from freguesias
+where nome = 'Paços de Ferreira';
+
+--P2
+select partido, votos
+from votacoes
+where freguesia in  (select codigo
+                    from freguesias
+                    where nome = 'Paços de Ferreira');
+
+--P3                    
+select COUNT(nome)
+from freguesias
+where nome like '%Vilar%';
+
+--P4                    
+select freguesias.NOME
+from freguesias inner join concelhos
+on freguesias.CONCELHO = concelhos.CODIGO
+where concelhos.NOME = 'Espinho';
+
+--P5
+select distritos.CODIGO, distritos.NOME
+from distritos inner join concelhos
+on distritos.CODIGO = concelhos.DISTRITO
+inner join freguesias
+on freguesias.CONCELHO = concelhos.CODIGO
+where freguesias.NOME = 'Paços de Ferreira';
+
+--P6
+select mandatos
+from listas inner join distritos
+on listas.DISTRITO = distritos.CODIGO
+where distritos.CODIGO = 13
+order by mandatos desc;
+
+--P7
+select distritos.NOME, participacoes.VOTANTES, participacoes.ABSTENCOES
+from participacoes inner join distritos
+on participacoes.DISTRITO = distritos.CODIGO
+where participacoes.ABSTENCOES*0.75 > participacoes.VOTANTES;
+
+--P8
+select freguesias.CODIGO, nome
+from freguesias inner join concelhos
+on freguesias.CONCELHO = concelhos.CODIGO
+inner join distritos
+on concelhos.DISTRITO = distritos.CODIGO
+inner join votacoes
+on freguesias.CODIGO = votacoes.FREGUESIA
+where distritos.REGIAO = 'M' and votacoes.PARTIDO = 'PSN' and votacoes.VOTOS = 0;
+
+--P9
+select partido
+from votacoes inner join freguesias
+on votacoes.FREGUESIA = freguesias.CODIGO
+inner join concelhos
+on freguesias.CONCELHO = concelhos.CODIGO
+inner join distritos
+on concelhos.DISTRITO = distritos.CODIGO
+where distritos.NOME = 'Lisboa' and votacoes.VOTOS = 0
+group by partido;
+
+--P10
+select concelhos.NOME, partido, votos
+from freguesias inner join concelhos
+on freguesias.CONCELHO = concelhos.CODIGO
+inner join votacoes
+on freguesias.CODIGO = votacoes.FREGUESIA
+group by votacoes.PARTIDO, concelhos.NOME ;
+
+--P11
+select distritos.NOME, votacoes.PARTIDO, votacoes.VOTOS
+from votacoes inner join freguesias
+on votacoes.FREGUESIA = freguesias.CODIGO
+inner join concelhos
+on freguesias.CONCELHO = concelhos.CODIGO
+inner join distritos
+on concelhos.DISTRITO = distritos.CODIGO
+group by votacoes.PARTIDO, distritos.NOME;
+
+--P12
+select votacoes.PARTIDO, votacoes.VOTOS
+from votacoes
+group by votacoes.PARTIDO;
+
+--P13
+select votacoes.PARTIDO, votacoes.VOTOS
+from votacoes
+group by votacoes.PARTIDO
+order by votacoes.VOTOS desc
+limit 5;
+
+--P14
+select concelhos.NOME
+from concelhos inner join freguesias
+on concelhos.CODIGO = freguesias.CONCELHO
+group by concelhos.NOME
+order by COUNT(freguesias.CONCELHO) desc
+limit 1;
+
+--P14
+select distritos.NOME
+from distritos inner join concelhos
+on distritos.CODIGO = concelhos.DISTRITO
+group by distritos.NOME
+order by COUNT(concelhos.DISTRITO) desc
+limit 1;
+
+--P15 media de freguesias por concelho
+
+--P16
+select distritos.CODIGO, concelhos.NOME
+from distritos inner join concelhos
+on distritos.CODIGO = concelhos.DISTRITO
+order by distritos.CODIGO;
+
+--P17
+select concelhos.NOME
+from concelhos
+where nome in (select distritos.NOME
+from distritos inner join concelhos
+on distritos.CODIGO = concelhos.DISTRITO
+group by distritos.NOME
+order by COUNT(concelhos.DISTRITO) desc
+limit 1);    --Acho que está mal
+
+--P18
+--select votacoes.PARTIDO, freguesias.NOME, votacoes.VOTOS
+--from 
+
+--P19
+select votacoes.PARTIDO
+from votacoes ,distritos
+where distritos.NOME like '%o%'and votacoes.VOTOS = 0
+group by votacoes.PARTIDO;  --Acho que está mal
+
+--P20
+select distritos.NOME, partidos.DESIGNACAO, votacoes.VOTOS
+from partidos, distritos inner join concelhos
+on distritos.CODIGO = concelhos.DISTRITO
+inner join freguesias
+on concelhos.CODIGO = freguesias.CONCELHO
+inner join votacoes
+on freguesias.CODIGO = votacoes.FREGUESIA
+order by votacoes.VOTOS desc
+limit 1;     --Está mal
+
+--P21
+select concelhos.CODIGO, votacoes.PARTIDO
+from concelhos inner join freguesias
+on concelhos.CODIGO = freguesias.CONCELHO
+inner join votacoes
+on freguesias.CONCELHO = votacoes.FREGUESIA
+where concelhos.DISTRITO = 13;
+
+--P22

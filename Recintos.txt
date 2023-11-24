@@ -1,0 +1,60 @@
+--1
+select nome,lotacao,morada
+from recintos
+where lotacao > 5000
+order by lotacao desc;
+
+--2 Corrigir
+select cod,designacao,nut1
+from distritos inner join regioes
+on distritos.cod = regioes.nut1
+where distritos.cod is not null
+    and regioes.nut1 is not null;
+    
+--3
+select nome, morada, lotacao, tipos.descricao
+from recintos inner join tipos
+on recintos.tipo = tipos.tipo
+where concelho in (select cod
+                    from concelhos
+                    where designacao = 'Gondomar')
+order by nome;
+
+--4
+select nome, lotacao, tipos.descricao
+from recintos inner join tipos
+on recintos.tipo = tipos.tipo
+where tipos.descricao like '%multiusos%'
+order by nome;
+
+--5
+select recintos.nome, recintos.lotacao
+from recintos inner join usos
+on recintos.id = usos.id
+where ref = 2
+order by recintos.lotacao desc;
+
+--6
+select distritos.designacao, COUNT(recintos.id) as quant
+from recintos inner join concelhos
+on recintos.concelho = concelhos.cod
+inner join distritos
+on concelhos.distrito = distritos.cod
+group by distritos.designacao
+order by distritos.designacao;
+
+--7 Corrigir
+select COUNT(concelhos.cod) as quant
+from concelhos inner join recintos
+on concelhos.cod = recintos.concelho
+inner join usos
+on recintos.id = usos.id
+where usos.ref <> 2;
+
+--8 Acabar
+select distritos.cod, distritos.designacao
+from distritos inner join concelhos
+on distritos.cod = concelhos.distrito
+inner join recintos
+on concelhos.cod = recintos.concelho
+group by distritos.designacao;

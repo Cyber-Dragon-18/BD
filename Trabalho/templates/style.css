@@ -1,0 +1,9 @@
+nav{
+    text-align: center;
+    font-size: 14px;
+    background-color: white;
+    text-decoration: none;
+    margin-right: 15px ;
+    font-weight: bold;
+    transition: color 0.3s ease-in-out;
+}

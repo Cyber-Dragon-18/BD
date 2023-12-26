@@ -2,16 +2,13 @@ import logging
 import sqlite3
 import re
 
-global DB, DB_FILE
-
-# TODO change this to your database file
-DB_FILE = 'my_database.db'
+global DB
 
 DB = dict()
 
 def connect():
-  global DB, DB_FILE
-  c = sqlite3.connect(DB_FILE, check_same_thread=False)
+  global DB
+  c = sqlite3.connect('steam_db_up.db', check_same_thread=False)
   print("connected", c)
   c.row_factory = sqlite3.Row
   DB['conn'] = c

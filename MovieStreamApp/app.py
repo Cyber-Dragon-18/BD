@@ -153,96 +153,104 @@ def get_dlc(id):
     
     return render_template('dlc.html', dlc = dlc, publishers = publishers, developers = developers)
 
-# Genres
-@APP.route('/genres/')
-def list_genres():
-    genres = db.execute('''
-      SELECT GenreId, Label 
-      FROM GENRE
-      ORDER BY Label
+# Musics
+@APP.route('/musics/')
+def list_musics():
+    musics = db.execute('''
+        SELECT *
+        FROM music
+        NATURAL JOIN product
+        ORDER BY name
     ''').fetchall()
-    return render_template('genre-list.html', genres=genres)
+    return render_template('music-list.html', musics=musics)
 
-@APP.route('/genres/<int:id>/')
-def view_movies_by_genre(id):
-  genre = db.execute(
-    '''
-    SELECT GenreId, Label
-    FROM GENRE 
-    WHERE GenreId = ?
+@APP.route('/musics/<int:id>')
+def get_music(id):
+    music = db.execute('''
+        SELECT *
+        FROM music
+        NATURAL JOIN product
+        WHERE product_id = ?     
     ''', [id]).fetchone()
+    
+    if music is None:
+        abort(404, 'Music id {} does not exist.'.format(id))
+        
+    publishers_id = db.execute('''
+        SELECT publishers_id
+        FROM music
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    publishers = {}
+    for publisher in publishers_id:
+        publishers[publisher] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [publisher]).fetchone()
+    
+    developers_id = db.execute('''
+        SELECT developers_id
+        FROM music
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    developers = {}
+    for developer in developers_id:
+        developers[developer] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [developer]).fetchone()
+    
+    return render_template('music.html', music = music, publishers = publishers, developers = developers)
 
-  if genre is None:
-     abort(404, 'Genre id {} does not exist.'.format(id))
-
-  movies = db.execute(
-    '''
-    SELECT MovieId, Title
-    FROM MOVIE NATURAL JOIN MOVIE_GENRE
-    WHERE GenreId = ?
-    ORDER BY Title
-    ''', [id]).fetchall()
-
-  return render_template('genre.html', 
-           genre=genre, movies=movies)
-
-# Streams
-@APP.route('/streams/<int:id>/')
-def get_stream(id):
-  stream = db.execute(
-      '''
-      SELECT StreamId, StreamDate, Charge, MovieId, Title, CustomerId, Name
-      FROM STREAM NATURAL JOIN MOVIE NATURAL JOIN CUSTOMER 
-      WHERE StreamId = ?
-      ''', [id]).fetchone()
-
-  if stream is None:
-     abort(404, 'Stream id {} does not exist.'.format(id))
-
-  return render_template('stream.html', stream=stream)
-
-
-# Staff
-@APP.route('/staff/')
-def list_staff():
-    staff = db.execute('''
-      SELECT S1.StaffId AS StaffId, 
-             S1.Name AS Name,
-             S1.Job AS Job, 
-             S1.Supervisor AS Supervisor,
-             S2.Name AS SupervisorName
-      FROM STAFF S1 LEFT JOIN STAFF S2 ON(S1.Supervisor = S2.StaffId)
-      ORDER BY S1.Name
+# Companies
+@APP.route('/companies/')
+def list_companies():
+    companies = db.execute('''
+        SELECT *
+        FROM company
+        ORDER BY name
     ''').fetchall()
-    return render_template('staff-list.html', staff=staff)
+    return render_template('company-list.html', companies = companies)
 
-@APP.route('/staff/<int:id>/')
-def show_staff(id):
-  staff = db.execute(
-    '''
-    SELECT StaffId, Name, Supervisor, Job
-    FROM STAFF
-    WHERE staffId = ?
+@APP.route('/companies/<int:id>')
+def get_company(id):
+    company = db.execute('''
+        SELECT *
+        FROM company
+        WHERE company_id = ?     
     ''', [id]).fetchone()
+    
+    if company is None:
+        abort(404, 'Company id {} does not exist.'.format(id))
+        
+    return render_template('company.html', company = company)
 
-  if staff is None:
-     abort(404, 'Staff id {} does not exist.'.format(id))
-  superv={}
-  if not (staff['Supervisor'] is None):
-    superv = db.execute(
-      '''
-      SELECT Name
-      FROM staff
-      WHERE staffId = ?
-      ''', [staff['Supervisor']]).fetchone()
-  supervisees = []
-  supervisees = db.execute(
-    '''
-      SELECT StaffId, Name from staff
-      where Supervisor = ?
-      ORDER BY Name
-    ''',[id]).fetchall()
 
-  return render_template('staff.html', 
-           staff=staff, superv=superv, supervisees=supervisees)
+# Kinds
+@APP.route('/kinds/')
+def list_kinds():
+    kinds = db.execute('''
+        SELECT *
+        FROM kind
+        ORDER BY name
+    ''').fetchall()
+    return render_template('kind-list.html', kinds = kinds)
 
+@APP.route('/kinds/<int:id>')
+def get_kind(id):
+    kind = db.execute('''
+        SELECT *
+        FROM kind
+        WHERE kind_id = ?     
+    ''', [id]).fetchone()
+    
+    if kind is None:
+        abort(404, 'Kind id {} does not exist.'.format(id))
+        
+    return render_template('kind.html', kind = kind)

@@ -1,101 +1,99 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>MoviewStream database</h1>
+<h1>Steam Games database</h1>
 
 <h2>About</h2>
-<p>This web application illustrates the use of the MovieStream
-database. The application is built using 
-<a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a>,
-<a href="https://flask.palletsprojects.com">Flask</a>, and
-<a href="https://jinja.palletsprojects.com">Jinja</a>.
-</p>
+<!-- <p>This web application illustrates the use of the MovieStream
+    database. The application is built using 
+    <a href="https://docs.python.org/3/library/sqlite3.html">sqlite3</a>,
+    <a href="https://flask.palletsprojects.com">Flask</a>, and
+    <a href="https://jinja.palletsprojects.com">Jinja</a>.
+</p> 
+A mudar pois não sei se isto é necessario-->
 
 <h2>Some database statistics</h2>
+
 <table>
 <tr>
-  <th>Items</th>
-  <th>Count</th>
+    <th>Items</th>
+    <th>Count</th>
 </tr>
 <tr>
-  <td>Movies</td>
-  <td>{{ stats.n_movies }}</td>
+    <td>Games</td>
+    <td>{{ stats.n_game }}</td>
 </tr>
 <tr>
-  <td>Actors in movies</td>
-  <td>{{ stats.n_actors }}</td>
+    <td>Dlc's</td>
+    <td>{{ stats.n_dlc }}</td>
 </tr>
 <tr>
-  <td>Movie genres</td>
-  <td>{{ stats.n_genres }}</td>
+    <td>Publichers</td>
+    <td>{{ stats.n_publisher }}</td>
 </tr>
 <tr>
-  <td>Streams</td>
-  <td>{{ stats.n_streams }}</td>
+    <td>Developers</td>
+    <td>{{ stats.n_developer }}</td>
 </tr>
 <tr>
-  <td>Customers</td>
-  <td>{{ stats.n_customers }}</td>
+    <td>Music</td>                  
+    <td>{{ stats.n_music }}</td>
 </tr>
 <tr>
-  <td>Countries</td>
-  <td>{{ stats.n_countries }}</td>
+    <td>Product</td>
+    <td>{{ stats.n_product }}</td>
 </tr>
 <tr>
-  <td>Regions</td>
-  <td>{{ stats.n_regions }}</td>
+    <td>Cathegory</td>
+    <td>{{ stats.n_cathegory }}</td>
+</tr>
+<tr>
+    <td>Company</td>
+    <td>{{ stats.n_company }}</td>
 </tr>
 </table>
 
-
 <h2>Sample functionality</h2>
 
-<h3>Movies</h3>
-<p>
-   <a href="/movies">List all</a>
-</p>
-<p>Get movie info:
-<form name="mid" action="javascript:window.open('/movies/'+document.forms['mid'].elements['id'].value,'_self')">
-   Movie Id:<input value="123" name="id" type="number" min="1"/><input type="submit" value="get"/>
-</form>
-</p>
-  
-<p>Search by title:
+<h3>Games</h3>
+
+<p><a href = "/games">List all</a></p>
+<p>Get game info:
 <form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
-  <input name="expr" id="expr" value="Spider" required/>
-  <input type="submit" value="search"/>
-</form>
-</p>
-
-<h3>Actors</h3>
-<p>
-   <a href="/actors">List all</a>
-</p>
-<p>Get actor info:
-<form name="aid" action="javascript:window.open('/actors/'+document.forms['aid'].elements['id'].value,'_self')">
-   Actor Id:<input value="123" name="id" type="number" min="1"/><input type="submit" value="get"/>
-</form>
-</p>
-  
-<p>Search by name (prone to <a href="https://en.wikipedia.org/wiki/SQL_injection">SQL injection</a>!)
-  <form name="asearch" action="javascript:window.open('/actors/search/'+document.forms['asearch'].elements['expr'].value,'_self')">
-    <input name="expr" id="expr" value="Tom" required/>
+    <input name="expr" id="expr" value="Spider" required/>
     <input type="submit" value="search"/>
-  </form>
-</p>
-
-<h3>Genres</h3>
-<p>
-   <a href="/genres">List all</a>
-</p>
-
-<p>Get genre info:
-<form name="gid" action="javascript:window.open('/genres/'+document.forms['gid'].elements['id'].value,'_self')">
-   Genre Id:<input value="1" name="id" type="number" min="1"/><input type="submit" value="get"/>
 </form>
 </p>
 
-<h3>Staff</h3>
-<p>
-   <a href="/staff">List all</a>
+<h3>Dlc's</h3>
+
+<p><a href = "/dlc">List all</a></p>
+<p>Get dlc info:
+<form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+    <input name="expr" id="expr" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
 </p>
+
+<h3>Publichers</h3>
+
+<p><a href="/publichers">List all</a></p>
+<p>Get publicher info:
+<form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+    <input name="expr" id="expr" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
+</p>
+
+<h3>Developers</h3>
+
+<p><a href ="/developers">List all</a></p>
+<p>Get developer info:
+<form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+    <input name="expr" id="expr" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
+</p>
+
+<!-- Aqui pode ter mais -->
+
 {% endblock %}

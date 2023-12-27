@@ -9,7 +9,6 @@ DB = dict()
 def connect():
   global DB
   c = sqlite3.connect('steam_db_up.db', check_same_thread=False)
-  print("connected", c)
   c.row_factory = sqlite3.Row
   DB['conn'] = c
   DB['cursor'] = c.cursor()

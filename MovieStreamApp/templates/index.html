@@ -23,7 +23,7 @@ A mudar pois não sei se isto é necessario-->
     <td>{{ stats.n_game }}</td>
 </tr>
 <tr>
-    <td>Dlc's</td>
+    <td>DLCs</td>
     <td>{{ stats.n_dlc }}</td>
 </tr>
 <tr>
@@ -54,15 +54,24 @@ A mudar pois não sei se isto é necessario-->
 
 <h2>Sample functionality</h2>
 
+<h3>Products</h3>
+<p><a href = "/products">List all</a></p>
+<p>Get game info:
+<form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+    <input name="expr" id="expr" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
+
 <h3>Games</h3>
 
-<p><a href = "/games">List all</a></p>
+<p><a style = "text-decoration:none" href = "/games">List all</a></p>
 <p>Get game info:
 <form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
     <input name="expr" id="expr" value="Spider" required/>
     <input type="submit" value="search"/>
 </form>
 </p>
+
 
 <h3>Dlc's</h3>
 
@@ -74,26 +83,36 @@ A mudar pois não sei se isto é necessario-->
 </form>
 </p>
 
-<h3>Publichers</h3>
 
-<p><a href="/publichers">List all</a></p>
-<p>Get publicher info:
+<h3>Music</h3>
+
+<p><a href="/musics">List all</a></p>
+<p>Get music info:
 <form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
     <input name="expr" id="expr" value="Spider" required/>
     <input type="submit" value="search"/>
 </form>
 </p>
 
-<h3>Developers</h3>
+<h3>Companies</h3>
 
-<p><a href ="/developers">List all</a></p>
-<p>Get developer info:
+<p><a href ="/companies">List all</a></p>
+<p>Get company info:
 <form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
     <input name="expr" id="expr" value="Spider" required/>
     <input type="submit" value="search"/>
 </form>
 </p>
 
-<!-- Aqui pode ter mais -->
+
+<h3>Kind</h3>
+
+<p><a href ="/kinds">List all</a></p>
+<p>Get kind info:
+<form name="msearch" action="javascript:window.open('/movies/search/'+document.forms['msearch'].elements['expr'].value,'_self')">
+    <input name="expr" id="expr" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
+</p>
 
 {% endblock %}

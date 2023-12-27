@@ -31,115 +31,127 @@ def index():
     logging.info(stats)
     return render_template('index.html',stats=stats)
 
-# Movies
-@APP.route('/movies/')
-def list_movies():
-    movies = db.execute(
-      '''
-      SELECT MovieId, Title, Year, Duration 
-      FROM MOVIE
-      ORDER BY Title
-      ''').fetchall()
-    return render_template('movie-list.html', movies=movies)
+#Products
+@APP.route('/products')
+def list_products():
+   products = db.execute('''
+        SELECT *
+        FROM products
+        ORDER BY name
+        ''')
 
-
-@APP.route('/movies/<int:id>/')
-def get_movie(id):
-  movie = db.execute(
-      '''
-      SELECT MovieId, Title, Year, Duration 
-      FROM MOVIE 
-      WHERE movieId = ?
-      ''', [id]).fetchone()
-
-  if movie is None:
-     abort(404, 'Movie id {} does not exist.'.format(id))
-
-  genres = db.execute(
-      '''
-      SELECT GenreId, Label 
-      FROM MOVIE_GENRE NATURAL JOIN GENRE 
-      WHERE movieId = ? 
-      ORDER BY Label
-      ''', [id]).fetchall()
-
-  actors = db.execute(
-      '''
-      SELECT ActorId, Name
-      FROM MOVIE_ACTOR NATURAL JOIN ACTOR
-      WHERE MovieId = ?
-      ORDER BY Name
-      ''', [id]).fetchall()
-
-  streams = db.execute(
-      ''' 
-      SELECT StreamId, StreamDate
-      FROM STREAM
-      WHERE MovieId = ?
-      ORDER BY StreamDate Desc
-      ''', [id]).fetchall();
-  return render_template('movie.html', 
-           movie=movie, genres=genres, actors=actors, streams=streams)
-
-@APP.route('/movies/search/<expr>/')
-def search_movie(expr):
-  search = { 'expr': expr }
-  expr = '%' + expr + '%'
-  movies = db.execute(
-      ''' 
-      SELECT MovieId, Title
-      FROM MOVIE 
-      WHERE Title LIKE ?
-      ''', [expr]).fetchall()
-  return render_template('movie-search.html',
-           search=search,movies=movies)
-
-# Actors
-@APP.route('/actors/')
-def list_actors():
-    actors = db.execute('''
-      SELECT ActorId, Name 
-      FROM Actor
-      ORDER BY Name
+# Games
+@APP.route('/games/')
+def list_games():
+    games = db.execute('''
+        SELECT product_id, game_id, kind_id, name, required_age, achievements, release_date, coming_soon, price, review_score, total_positive, total_positive, rating, owners, average_forever, median_forever, tags, sported_audio, categories, genres, platforms, packages, supported_lang
+        FROM game
+        NATURAL JOIN product
+        ORDER BY name
     ''').fetchall()
-    return render_template('actor-list.html', actors=actors)
+    return render_template('game-list.html', games=games)
 
 
-@APP.route('/actors/<int:id>/')
-def view_movies_by_actor(id):
-  actor = db.execute(
-    '''
-    SELECT ActorId, Name
-    FROM ACTOR 
-    WHERE ActorId = ?
+@APP.route('/games/<int:id>/')
+def get_game(id):
+    game = db.execute('''
+        SELECT *
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?     
     ''', [id]).fetchone()
+    
+    if game is None:
+        abort(404, 'Game id {} does not exist.'.format(id))
+        
+    publishers_id = db.execute('''
+        SELECT publishers_id
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    publishers = {}
+    for publisher in publishers_id:
+        publishers[publisher] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [publisher]).fetchone()
+    
+    developers_id = db.execute('''
+        SELECT developers_id
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    developers = {}
+    for developer in developers_id:
+        developers[developer] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [developer]).fetchone()
+    
+    return render_template('game.html', game = game, publishers = publishers, developers = developers)
 
-  if actor is None:
-     abort(404, 'Actor id {} does not exist.'.format(id))
 
-  movies = db.execute(
-    '''
-    SELECT MovieId, Title
-    FROM MOVIE NATURAL JOIN MOVIE_ACTOR
-    WHERE ActorId = ?
-    ORDER BY Title
-    ''', [id]).fetchall()
+#DLCs
+@APP.route('/dlcs/')
+def list_dlcs():
+    dlcs = db.execute('''
+        SELECT *
+        FROM dlc
+        NATURAL JOIN product
+        ORDER BY name
+    ''').fetchall()
+    return render_template('dlc-list.html', dlcs=dlcs)
 
-  return render_template('actor.html', 
-           actor=actor, movies=movies)
- 
-@APP.route('/actors/search/<expr>/')
-def search_actor(expr):
-  search = { 'expr': expr }
-  # SQL INJECTION POSSIBLE! - avoid this!
-  actors = db.execute(
-      ' SELECT ActorId, Name'
-      ' FROM ACTOR '
-      ' WHERE Name LIKE \'%' + expr + '%\''
-    ).fetchall()
 
-  return render_template('actor-search.html', 
-           search=search,actors=actors)
+@APP.route('/dlcs/<int:id>/')
+def get_dlc(id):
+    dlc = db.execute('''
+        SELECT *
+        FROM dlc
+        NATURAL JOIN product
+        WHERE product_id = ?     
+    ''', [id]).fetchone()
+    
+    if dlc is None:
+        abort(404, 'Dlc id {} does not exist.'.format(id))
+        
+    publishers_id = db.execute('''
+        SELECT publishers_id
+        FROM dlc
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    publishers = {}
+    for publisher in publishers_id:
+        publishers[publisher] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [publisher]).fetchone()
+    
+    developers_id = db.execute('''
+        SELECT developers_id
+        FROM dlc
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    developers = {}
+    for developer in developers_id:
+        developers[developer] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [developer]).fetchone()
+    
+    return render_template('dlc.html', dlc = dlc, publishers = publishers, developers = developers)
 
 # Genres
 @APP.route('/genres/')

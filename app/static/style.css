@@ -310,3 +310,8 @@ kbd {
 		word-wrap: break-word;
 	}
 }
+
+.barra{
+  text-align: center;
+  font-size: 50px;
+}

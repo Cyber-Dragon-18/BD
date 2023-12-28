@@ -2,8 +2,8 @@ import logging
 import sqlite3
 import re
 
-global DB
 
+global DB
 DB = dict()
 
 def connect():
@@ -24,3 +24,4 @@ def execute(sql,args=None):
 def close():
   global DB
   DB['conn'].close()
+

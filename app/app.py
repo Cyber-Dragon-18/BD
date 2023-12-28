@@ -6,7 +6,7 @@ import db
 
 APP = Flask(__name__)
 
-# Start page
+#Start page
 @APP.route('/')
 def index():
     stats = {}
@@ -27,74 +27,19 @@ def index():
     logging.info(stats)
     return render_template('index.html', stats = stats)
 
-#Products
+
+# Products
 @APP.route('/products')
 def list_products():
-    product = db.execute('''
+    products = db.execute('''
         SELECT *
         FROM product
-        ORDER BY name
-        ''').fetchall()
-    return render_template('product-list.html', product = product)
-
-# Games
-@APP.route('/games/')
-def list_games():
-    games = db.execute('''
-        SELECT product_id, game_id, kind_id, name, required_age, achievements, release_date, coming_soon, price, review_score, total_positive, total_positive, rating, owners, average_forever, median_forever, tags, sported_audio, categories, genres, platforms, packages, supported_lang
-        FROM game
-        NATURAL JOIN product
-        ORDER BY name
+        ORDER BY name                      
     ''').fetchall()
-    return render_template('game-list.html', games=games)
+    return render_template('products.html', products = products)
 
 
-@APP.route('/games/<int:id>/')
-def get_game(id):
-    game = db.execute('''
-        SELECT *
-        FROM game
-        NATURAL JOIN product
-        WHERE product_id = ?     
-    ''', [id]).fetchone()
-    
-    if game is None:
-        abort(404, 'Game id {} does not exist.'.format(id))
-        
-    publishers_id = db.execute('''
-        SELECT publishers_id
-        FROM game
-        NATURAL JOIN product
-        WHERE product_id = ?
-    ''', [id]).fetchone()
-    
-    publishers = {}
-    for publisher in publishers_id:
-        publishers[publisher] = db.execute('''
-            SELECT name
-            FROM company
-            WHERE company_id = ?
-        ''', [publisher]).fetchone()
-    
-    developers_id = db.execute('''
-        SELECT developers_id
-        FROM game
-        NATURAL JOIN product
-        WHERE product_id = ?
-    ''', [id]).fetchone()
-    
-    developers = {}
-    for developer in developers_id:
-        developers[developer] = db.execute('''
-            SELECT name
-            FROM company
-            WHERE company_id = ?
-        ''', [developer]).fetchone()
-    
-    return render_template('game.html', game = game, publishers = publishers, developers = developers)
-
-
-#DLCs
+# DLCs
 @APP.route('/dlcs/')
 def list_dlcs():
     dlcs = db.execute('''
@@ -105,14 +50,13 @@ def list_dlcs():
     ''').fetchall()
     return render_template('dlc-list.html', dlcs=dlcs)
 
-
-@APP.route('/dlcs/<int:id>/')
+@APP.route('/dlcs/<int:id>')
 def get_dlc(id):
     dlc = db.execute('''
         SELECT *
         FROM dlc
         NATURAL JOIN product
-        WHERE product_id = ?     
+        WHERE product_id = ?
     ''', [id]).fetchone()
     
     if dlc is None:
@@ -125,13 +69,15 @@ def get_dlc(id):
         WHERE product_id = ?
     ''', [id]).fetchone()
     
+
+    aux = str(publishers_id[0]).split(';')
     publishers = {}
-    for publisher in publishers_id:
+    for publisher in aux:
         publishers[publisher] = db.execute('''
             SELECT name
             FROM company
             WHERE company_id = ?
-        ''', [publisher]).fetchone()
+        ''', [publisher]).fetchone()[0]
     
     developers_id = db.execute('''
         SELECT developers_id
@@ -140,15 +86,76 @@ def get_dlc(id):
         WHERE product_id = ?
     ''', [id]).fetchone()
     
+    
+    aux = str(developers_id[0]).split(';')
     developers = {}
-    for developer in developers_id:
+    for developer in aux:
         developers[developer] = db.execute('''
             SELECT name
             FROM company
             WHERE company_id = ?
-        ''', [developer]).fetchone()
+        ''', [developer]).fetchone()[0]
     
     return render_template('dlc.html', dlc = dlc, publishers = publishers, developers = developers)
+
+
+# Games
+@APP.route('/games/')
+def list_games():
+    games = db.execute('''
+        SELECT *
+        FROM game
+        NATURAL JOIN product
+        ORDER BY name
+    ''').fetchall()
+    return render_template('game-list.html', games=games)
+
+@APP.route('/games/<int:id>')
+def get_game(id):
+    game = db.execute('''
+        SELECT *
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?    
+    ''', [id]).fetchone()
+    
+    if game is None:
+        abort(404, 'Game id {} does not exist.'.format(id))
+        
+    publishers_id = db.execute('''
+        SELECT publishers_id
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    aux = str(publishers_id[0]).split(';')
+    publishers = {}
+    for publisher in aux:
+        publishers[publisher] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [publisher]).fetchone()[0]
+    
+    developers_id = db.execute('''
+        SELECT developers_id
+        FROM game
+        NATURAL JOIN product
+        WHERE product_id = ?
+    ''', [id]).fetchone()
+    
+    aux = str(developers_id[0]).split(';')
+    developers = {}
+    for developer in aux:
+        developers[developer] = db.execute('''
+            SELECT name
+            FROM company
+            WHERE company_id = ?
+        ''', [developer]).fetchone()[0]
+    
+    return render_template('game.html', game = game, publishers = publishers, developers = developers)
+
 
 # Musics
 @APP.route('/musics/')
@@ -180,13 +187,14 @@ def get_music(id):
         WHERE product_id = ?
     ''', [id]).fetchone()
     
+    aux = str(publishers_id[0]).split(';')
     publishers = {}
-    for publisher in publishers_id:
+    for publisher in aux:
         publishers[publisher] = db.execute('''
             SELECT name
             FROM company
             WHERE company_id = ?
-        ''', [publisher]).fetchone()
+        ''', [publisher]).fetchone()[0]
     
     developers_id = db.execute('''
         SELECT developers_id
@@ -195,15 +203,17 @@ def get_music(id):
         WHERE product_id = ?
     ''', [id]).fetchone()
     
+    aux = str(developers_id[0]).split(';')
     developers = {}
-    for developer in developers_id:
+    for developer in aux:
         developers[developer] = db.execute('''
             SELECT name
             FROM company
             WHERE company_id = ?
-        ''', [developer]).fetchone()
+        ''', [developer]).fetchone()[0]
     
     return render_template('music.html', music = music, publishers = publishers, developers = developers)
+
 
 # Companies
 @APP.route('/companies/')
@@ -235,7 +245,7 @@ def list_kinds():
     kinds = db.execute('''
         SELECT *
         FROM kind
-        ORDER BY name
+        ORDER BY kind_id
     ''').fetchall()
     return render_template('kind-list.html', kinds = kinds)
 
@@ -251,3 +261,46 @@ def get_kind(id):
         abort(404, 'Kind id {} does not exist.'.format(id))
         
     return render_template('kind.html', kind = kind)
+
+# DLCs per Game
+@APP.route('/dlcs-per-game/')
+def get_dlcs_per_game():
+    table = db.execute('''
+        SELECT name, COUNT(*) as number_of_dlcs
+        FROM dlc
+        JOIN game
+        JOIN product
+        WHERE dlc.game_id = game.product_id and game.product_id = product.product_id
+        GROUP BY game_id
+    ''').fetchone()
+    
+    return render_template('dlcs-per-game.html', table = table)
+
+# Musics per Game
+@APP.route('/musics-per-game/')
+def get_musics_per_game():
+    table = db.execute('''
+        SELECT name, COUNT(*) as number_of_musics
+        FROM music
+        JOIN game
+        JOIN product
+        WHERE music.game_id = game.product_id and game.product_id = product.product_id
+        GROUP BY game_id
+    ''').fetchone()
+    
+    return render_template('musics-per-game.html', table = table)
+    
+# Products like %text%
+@APP.route('/products/like/<text>')
+def get_products_like(id):
+    text = '%'+text+'%'
+    table = db.execute('''
+        SELECT *
+        FROM products
+        where name like ? 
+    ''', [text]).fetchall()
+    
+    if table is None:
+        abort(404, 'There is no product with {} in its name'.format(text))
+        
+    return render_template('product-like.html', table = table)

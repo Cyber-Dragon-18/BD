@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Products Like "{{ text }} "</h1>
+{% if table %}
+<table>
+    <tr>
+        <th>Product ID</th>
+        <th>Product Name</th>
+        <!-- Add more columns as needed -->
+    </tr>
+    {% for row in table %}
+    <tr>
+        <td>{{ row.product_id }}</td>
+        <td>{{ row.name }}</td>
+        <!-- Add more cells as needed -->
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No products found with name containing "{{ text }}"</p>
+{% endif %}
+
+{% endblock %}

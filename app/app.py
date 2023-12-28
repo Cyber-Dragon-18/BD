@@ -291,16 +291,16 @@ def get_musics_per_game():
     return render_template('musics-per-game.html', table = table)
     
 # Products like %text%
-@APP.route('/products/like/<text>')
-def get_products_like(id):
+@APP.route('/products-like/<text>')
+def get_products_like(text):
     text = '%'+text+'%'
     table = db.execute('''
         SELECT *
-        FROM products
+        FROM product
         where name like ? 
     ''', [text]).fetchall()
     
     if table is None:
         abort(404, 'There is no product with {} in its name'.format(text))
         
-    return render_template('product-like.html', table = table)
+    return render_template('product-like.html', table = table, text = text)

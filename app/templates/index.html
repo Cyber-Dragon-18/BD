@@ -48,10 +48,19 @@
 
 <h3>Products</h3>
 <p><a style = "text-decoration:none" href = "/products">List all</a></p>
+<p>Search by title:
+<form name="prodinfo" action="javascript:window.open('/products-like/'+document.forms['prodinfo'].elements['text'].value,'_self')">
+    <input name="text" id="text" value="Spider" required/>
+    <input type="submit" value="search"/>
+</form>
+</p>
+<h3>DLCs per Game</h3>
+<p><a style = "text-decoration:none" href = "/dlcs-per-game">List all</a></p>
 
+<h3>Musics per Game</h3>
+<p><a style = "text-decoration:none" href = "/musics-per-game">List all</a></p>
 
 <h3>Games</h3>
-
 <p><a style = "text-decoration:none" href = "/games">List all</a></p>
 <p>Get game info:
 <form name="gameForm" action="javascript:window.open('/games/'+document.forms['gameForm'].elements['id'].value,'_self')">
@@ -60,7 +69,7 @@
 </p>
 
 
-<h3>Dlc's</h3>
+<h3>DLCs</h3>
 
 <p><a style = "text-decoration:none" href = "/dlcs">List all</a></p>
 <p>Get dlc info:
@@ -97,5 +106,6 @@
     Kind Id:<input value="1" name="id" type="number" min="1"/><input type="submit" value="get"/>
 </form>
 </p>
+
 
 {% endblock %}

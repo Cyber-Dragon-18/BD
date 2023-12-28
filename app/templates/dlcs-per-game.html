@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>DLCs per Game</h1>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Number of DLCs</th>
+    </tr>
+
+    {% for entry in table %}
+
+    <tr>
+        <td>{{ entry.name }}</td>
+        <td>{{ entry.number_of_dlcs }}</td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}

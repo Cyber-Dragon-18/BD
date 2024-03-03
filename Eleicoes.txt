@@ -10,6 +10,7 @@ where freguesia in  (select codigo
                     from freguesias
                     where nome = 'Paços de Ferreira');
 
+
 --P3                    
 select COUNT(nome)
 from freguesias
